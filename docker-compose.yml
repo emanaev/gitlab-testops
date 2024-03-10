@@ -1,0 +1,24 @@
+version: '3.6'
+services:
+  gitlab:
+    image: gitlab/gitlab-ce
+    environment:
+      GITLAB_POST_RECONFIGURE_SCRIPT: |
+        gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Auto', expires_at: 365.days.from_now, impersonation: true); token.set_token('token-string-here123'); token.save!"
+      GITLAB_OMNIBUS_CONFIG: |
+        # Add any other gitlab.rb configuration here, each on its own line
+        external_url 'http://gitlab'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '22:22'
+    # volumes:
+    #   - '$GITLAB_HOME/config:/etc/gitlab'
+    #   - '$GITLAB_HOME/logs:/var/log/gitlab'
+    #   - '$GITLAB_HOME/data:/var/opt/gitlab'
+    shm_size: '256m'
+
+  ops:
+    build: ./ops
+
+  
