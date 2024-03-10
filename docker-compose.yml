@@ -4,7 +4,7 @@ services:
     image: gitlab/gitlab-ce
     environment:
       GITLAB_POST_RECONFIGURE_SCRIPT: |
-        gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Auto', expires_at: 365.days.from_now, impersonation: true); token.set_token('token-string-here123'); token.save!"
+        gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Auto', expires_at: 365.days.from_now, impersonation: true); token.set_token('${TOKEN}'); token.save!"
       GITLAB_OMNIBUS_CONFIG: |
         # Add any other gitlab.rb configuration here, each on its own line
         external_url 'http://gitlab'
@@ -20,5 +20,7 @@ services:
 
   ops:
     build: ./ops
+    environment:
+      - GITLAB_TOKEN=${TOKEN}
 
   
